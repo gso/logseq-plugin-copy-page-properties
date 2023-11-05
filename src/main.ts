@@ -5,10 +5,10 @@ const settings: any = [];
 
 const main = () => {
   console.log("### In main()");
-  logseq.Editor.registerSlashCommand("Barcellz - Create new note", async () => {
+  logseq.Editor.registerSlashCommand("Copy page properties to new note", async () => {
     CopyPage();
   });
-  logseq.Editor.registerBlockContextMenuItem("Barcellz - Create new note", async () => {
+  logseq.Editor.registerBlockContextMenuItem("Copy page properties to new note", async () => {
     CopyPage();
   });
 };
