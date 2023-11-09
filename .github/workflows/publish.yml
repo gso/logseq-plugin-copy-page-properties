@@ -31,7 +31,7 @@ jobs:
       run: sudo apt-get install zip
 
     - name: Create Zip file
-      run: zip -r logseq-plugin-copy-page-properties.zip ./dist/* ./package.json ./README.md
+      run: zip -r logseq-plugin-copy-page-properties.zip ./dist/* ./package.json ./README.md ./LICENSE.md
 
     - name: Install GitHub CLI
       run: curl -sSL https://github.com/cli/cli/releases/download/v2.4.0/gh_2.4.0_linux_amd64.tar.gz | sudo tar xz -C /usr/local/bin --strip-components=2 gh_2.4.0_linux_amd64/bin/gh
