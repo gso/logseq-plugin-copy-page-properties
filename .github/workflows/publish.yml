@@ -39,6 +39,6 @@ jobs:
 
     - name: Create Release
       run: |
-        gh release create ${{ github.ref }} logseq-plugin-copy-page-properties.zip -t "Release ${{ github.ref }}" -n "Release notes"
+        gh release create ${{ github.ref }} logseq-plugin-copy-page-properties.zip -t "Release ${{ github.ref }}" -n "Pre-release for testing purposes." --prerelease
       env:
         PAT: ${{ secrets.LOGSEQ_PLUGIN_PAT }}
