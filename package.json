@@ -1,6 +1,7 @@
 {
   "name": "logseq-plugin-copy-page-properties",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.1",
+  "license":"MIT",
   "logseq": {
     "main": "dist/index.html",
     "id": "_vv6j65q83"
