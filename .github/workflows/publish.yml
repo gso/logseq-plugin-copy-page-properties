@@ -19,24 +19,18 @@ jobs:
     - name: Create Zip file
       run: zip -r logseq-plugin-copy-page-properties.zip ./dist/* ./package.json ./README.md
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+    - name: Install GitHub CLI
+      run: |
+        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+        sudo apt-add-repository https://cli.github.com/packages
+        sudo apt update
+        sudo apt install gh
 
-    - name: Upload Release Asset
-      id: upload-release-asset 
-      uses: actions/upload-release-asset@v1
+    - name: Authenticate with GitHub CLI
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+    - name: Create Release
+      run: |
+        gh release create ${{ github.ref }} logseq-plugin-copy-page-properties.zip -t "Release ${{ github.ref }}" -n "Initial alpha release."
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./logseq-plugin-copy-page-properties.zip
-        asset_name: logseq-plugin-copy-page-properties.zip
-        asset_content_type: application/zip
