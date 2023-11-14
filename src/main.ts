@@ -1,34 +1,29 @@
 import "@logseq/libs";
 import { BlockEntity } from "@logseq/libs/dist/LSPlugin.user";
 
-const settings: any = [];
-
 const main = () => {
   console.log("### In main()");
-  logseq.Editor.registerSlashCommand("Copy page properties to new note", async () => {
-    CopyPage();
+  logseq.Editor.registerSlashCommand("Copy page properties to new page", async () => {
+    CopyPropertiesToNewPage();
   });
-  logseq.Editor.registerBlockContextMenuItem("Copy page properties to new note", async () => {
-    CopyPage();
+  logseq.Editor.registerBlockContextMenuItem("Copy page properties to new page", async () => {
+    CopyPropertiesToNewPage();
+  });
+  logseq.Editor.registerSlashCommand("Copy page properties to linked page", async (e) => {
+    CopyPropertiesToPage(e.uuid);
+  });
+  logseq.Editor.registerBlockContextMenuItem("Copy page properties to linked page", async (e) => {
+    CopyPropertiesToPage(e.uuid);
   });
 };
 
-async function CopyPage() {
-  var blockstree: BlockEntity[] = await logseq.Editor.getCurrentPageBlocksTree();
-  var properties = await logseq.Editor.getBlockProperties(blockstree[0]!.uuid);
+async function CopyPropertiesToNewPage() {
+  var currentPageProperties = await GetPageProperties();
   var newPage = await logseq.Editor.createPage(getTimestamp(), { }, {
     redirect: true
   });
   var newPageBlockstree: BlockEntity[] = await logseq.Editor.getPageBlocksTree(newPage!.uuid);
-  var propertiesAry: string[] = [];
-  for (let key in properties) {
-    if (properties.hasOwnProperty(key)) {
-      var propertiesStr = key + ":: " + properties[key];
-      propertiesAry.push(propertiesStr);
-    }
-  }
-  var propertiesStr = propertiesAry.join("\n");
-  logseq.Editor.updateBlock(newPageBlockstree[0]!.uuid, propertiesStr);
+  logseq.Editor.updateBlock(newPageBlockstree[0]!.uuid, currentPageProperties);
   logseq.Editor.exitEditingMode();
 }
 
@@ -50,4 +45,47 @@ function getTimestamp(): string {
   return timestamp;
 }
 
-logseq.useSettingsSchema(settings).ready(main).catch(console.error);
+async function CopyPropertiesToPage(blockId: string) {
+  const block = await logseq.Editor.getBlock(blockId, {
+    includeChildren: false,
+  });
+  if (block === null) {
+    return;
+  }
+  const line = block.content;
+  const match = line.match(/\[\[(.*?)\]\]/);
+  if (match) {
+    var currentPageProperties = await GetPageProperties();
+    var pageName = match[1];
+    var linkedPage = await logseq.Editor.getPage(pageName);
+    var linkedPageBlocksTree = await logseq.Editor.getPageBlocksTree(pageName);
+    if (linkedPageBlocksTree[0] !== undefined) {
+      logseq.Editor.insertBlock(linkedPageBlocksTree[0]!.uuid, currentPageProperties, {
+        before: true
+      });
+    } 
+    else {
+      logseq.Editor.insertBlock(linkedPage!.uuid, currentPageProperties, {
+        before: false
+      });
+    }
+    parent.window.location.hash = `#/page/${pageName}`;
+  }
+}
+
+async function GetPageProperties() {
+  var blocksTree: BlockEntity[] = await logseq.Editor.getCurrentPageBlocksTree();
+  var properties = await logseq.Editor.getBlockProperties(blocksTree[0]!.uuid);
+  var propertiesAry: string[] = [];
+  for (let key in properties) {
+    if (properties.hasOwnProperty(key)) {
+      if (key !== "alias") {
+        var property = key + ":: " + properties[key];
+        propertiesAry.push(property);
+      }
+    }
+  }
+  return propertiesAry.join("\n");
+}
+
+logseq.ready(main).catch(console.error);
