@@ -69,8 +69,10 @@ async function CopyPropertiesToPage(blockId: string) {
         before: false
       });
     }
-    parent.window.location.hash = `#/page/${pageName}`;
-    //await logseq.Editor.exitEditingMode(); // has no effect
+    // This works with a filesystem plugin, but not Marketplace plugin.
+    //parent.window.location.hash = `#/page/${pageName}`;
+    // Has no effect.
+    //await logseq.Editor.exitEditingMode();
   }
 }
 
