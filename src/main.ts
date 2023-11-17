@@ -56,9 +56,9 @@ async function CopyPropertiesToPage(blockId: string) {
   const match = line.match(/\[\[(.*?)\]\]/);
   if (match) {
     var currentPageProperties = await GetPageProperties();
-    var pageName = match[1];
-    var linkedPage = await logseq.Editor.getPage(pageName);
-    var linkedPageBlocksTree = await logseq.Editor.getPageBlocksTree(pageName);
+    var linkedPageName = match[1];
+    var linkedPage = await logseq.Editor.getPage(linkedPageName);
+    var linkedPageBlocksTree = await logseq.Editor.getPageBlocksTree(linkedPageName);
     if (linkedPageBlocksTree[0] !== undefined) {
       logseq.Editor.insertBlock(linkedPageBlocksTree[0]!.uuid, currentPageProperties, {
         before: true
