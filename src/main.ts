@@ -57,6 +57,7 @@ async function CopyPropertiesToPage(blockId: string) {
   if (match) {
     var currentPageProperties = await GetPageProperties();
     var pageName = match[1];
+    var linkedPage = await logseq.Editor.getPage(pageName);
     var linkedPageBlocksTree = await logseq.Editor.getPageBlocksTree(pageName);
     if (linkedPageBlocksTree[0] !== undefined) {
       logseq.Editor.insertBlock(linkedPageBlocksTree[0]!.uuid, currentPageProperties, {
@@ -64,15 +65,10 @@ async function CopyPropertiesToPage(blockId: string) {
       });
     } 
     else {
-      var linkedPage = await logseq.Editor.getPage(pageName);
       logseq.Editor.insertBlock(linkedPage!.uuid, currentPageProperties, {
         before: false
       });
     }
-    // This works with a filesystem plugin, but not Marketplace plugin.
-    //parent.window.location.hash = `#/page/${pageName}`;
-    // Has no effect.
-    //await logseq.Editor.exitEditingMode();
   }
 }
 
