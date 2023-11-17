@@ -12,7 +12,7 @@ Create a new page and copy the page properties from the current page to the new 
 
 ## Copy page properties to linked page
 
-Copy the current page properties (with the exception of the `alias` property) to the first linked page in the block (i.e., page enclosed by `[[ ... ]]`).  Focus is left on the linked page.
+Copy the current page properties (with the exception of the `alias` property) to the first linked page in the block (i.e., page name enclosed by `[[ ... ]]`).  Focus is left on the linked page.
 
 # In action
 ![](./demo.gif)
